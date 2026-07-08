@@ -9,6 +9,8 @@
 
 Part of the TANK Series.
 
+---
+
 ### ⚠️ Trajectory is currently in **alpha**. ⚠️
 **The API is expected to change frequently until v1.0.0.**
 

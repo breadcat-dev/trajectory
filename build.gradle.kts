@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cat.breadcat"
-version = "0.1"
+version = "0.2.0"
 
 repositories {
     mavenCentral()
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-
+    implementation("cat.breadcat:toolbox:2.1.0")
 }
 
 publishing {
@@ -24,4 +24,3 @@ publishing {
         }
     }
 }
-

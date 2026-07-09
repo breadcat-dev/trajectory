@@ -85,9 +85,9 @@ public final class Vector3i
 
     public long distanceSquared(Vector3i other)
     {
-        float dx = x - other.x;
-        float dy = y - other.y;
-        float dz = z - other.z;
+        long dx = x - other.x;
+        long dy = y - other.y;
+        long dz = z - other.z;
 
         return dx * dx + dy * dy + dz * dz;
     }

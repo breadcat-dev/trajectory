@@ -1,15 +1,22 @@
 package cat.breadcat;
 
-import cat.breadcat.trajectory.vector.Vector3d;
+import cat.breadcat.trajectory.matrix.Matrix3d;
+import cat.breadcat.trajectory.matrix.Matrix4d;
 
 public class Main
 {
     public static void main(String[] args)
     {
-        Vector3d v1 = new Vector3d(2,3,4);
-        Vector3d v2 = new Vector3d(5,6,7);
-        Vector3d v3 = v1.cross(v2);
+        Matrix4d m1 = new Matrix4d(
+                0, 2, 1, 2,
+                3, 0, 3, 4,
+                5, 6, 0, 6,
+                7, 8, 7, 0
+        );
 
-        System.out.println(v3);
+        Matrix4d m2 = Matrix4d.IDENTITY;
+        Matrix4d m3 = m1.divide(m2);
+
+        System.out.println(m3);
     }
 }

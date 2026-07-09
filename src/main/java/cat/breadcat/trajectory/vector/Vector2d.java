@@ -95,10 +95,6 @@ public final class Vector2d
     }
 
 
-    public Vector2d negate()
-    {
-        return new Vector2d(-x, -y);
-    }
 
 
     public Vector2d lerp(Vector2d other, double interpolation)

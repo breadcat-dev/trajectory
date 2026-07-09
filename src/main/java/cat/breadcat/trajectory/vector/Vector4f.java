@@ -1,9 +1,16 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
+
 public final class Vector4f
 {
     public static final Vector4f ZERO = new Vector4f(0, 0, 0, 0);
-    public static final Vector4f ONE  = new Vector4f(1, 1, 1, 1);
+    public static final Vector4f ONE = new Vector4f(1, 1, 1, 1);
+    public static final Vector4f UNIT_X = new Vector4f(1, 0, 0, 0);
+    public static final Vector4f UNIT_Y = new Vector4f(0, 1, 0, 0);
+    public static final Vector4f UNIT_Z = new Vector4f(0, 0, 1, 0);
+    public static final Vector4f UNIT_W = new Vector4f(0, 0, 0, 1);
 
     public final float x;
     public final float y;
@@ -19,64 +26,94 @@ public final class Vector4f
     }
 
 
-    private float sumProducts(float a, float b, float c, float d)
+    private static float sumProducts(float a1, float a2, float a3, float a4,
+                               float b1, float b2, float b3, float b4)
     {
-        return x * a + y * b + z * c + w * d;
+        return a1 * b1 +
+                a2 * b2 +
+                a3 * b3 +
+                a4 * b4;
     }
 
 
     public Vector4f add(Vector4f other)
     {
-        return new Vector4f(x + other.x, y + other.y, z + other.z, w + other.w);
+        return new Vector4f(
+                x + other.x,
+                y + other.y,
+                z + other.z,
+                w + other.w
+        );
     }
-
     public Vector4f subtract(Vector4f other)
     {
-        return new Vector4f(x - other.x, y - other.y, z - other.z, w - other.w);
+        return new Vector4f(
+                x - other.x,
+                y - other.y,
+                z - other.z,
+                w - other.w
+        );
     }
-
-    public Vector4f multiply(Vector4f other)
-    {
-        return new Vector4f(x * other.x, y * other.y, z * other.z, w * other.w);
-    }
-
     public Vector4f multiply(float other)
     {
-        return new Vector4f(x * other, y * other, z * other, w * other);
+        return new Vector4f(
+                x * other,
+                y * other,
+                z * other,
+                w * other
+        );
     }
-
-    public Vector4f divide(Vector4f other)
+    public Vector4f multiply(Vector4f other)
     {
-        return new Vector4f(x / other.x, y / other.y, z / other.z, w / other.w);
+        return new Vector4f(
+                x * other.x,
+                y * other.y,
+                z * other.z,
+                w * other.w
+        );
     }
-
     public Vector4f divide(float other)
     {
-        return new Vector4f(x / other, y / other, z / other, w / other);
+        if(Float.compare(other, 0.0f) == 0)
+            throw new DivisionByZeroException("other");
+
+        return new Vector4f(
+                x / other,
+                y / other,
+                z / other,
+                w / other
+        );
     }
-
-
-    public float dot(Vector4f other)
+    public Vector4f divide(Vector4f other)
     {
-        return sumProducts(other.x, other.y, other.z, other.w);
-    }
+        if(
+                Float.compare(other.x, 0.0f) == 0 &&
+                        Float.compare(other.y, 0.0f) == 0 &&
+                        Float.compare(other.z, 0.0f) == 0 &&
+                        Float.compare(other.w, 0.0f) == 0
+        )
+            throw new DivisionByZeroException("other");
 
+        return new Vector4f(
+                x / other.x,
+                y / other.y,
+                z / other.z,
+                w / other.w
+        );
+    }
 
     public float length()
     {
         return (float)Math.sqrt(lengthSquared());
     }
-
     public float lengthSquared()
     {
-        return sumProducts(x, y, z, w);
+        return sumProducts(x, y, z, w, x, y, z, w);
     }
-
     public float distance(Vector4f other)
     {
         return (float)Math.sqrt(distanceSquared(other));
     }
-
     public float distanceSquared(Vector4f other)
     {
         float dx = x - other.x;
@@ -84,54 +121,52 @@ public final class Vector4f
         float dz = z - other.z;
         float dt = w - other.w;
 
-        return dx * dx + dy * dy + dz * dz + dt * dt;
+        return sumProducts(dx, dy, dz, dt, dx, dy, dz, dt);
     }
 
-
+    public float dot(Vector4f other)
+    {
+        return sumProducts(x, y, z, w, other.x, other.y, other.z, other.w);
+    }
     public Vector4f normalize()
     {
         float length = length();
 
-        if(length == 0)
-            throw new ArithmeticException("Cannot normalize zero vector.");
+        if(MathUtils.approximatelyZero(length))
+            throw new DivisionByZeroException("length");
 
         return divide(length);
     }
-
-
     public Vector4f negate()
     {
         return new Vector4f(-x, -y, -z, -w);
     }
-
-
     public Vector4f lerp(Vector4f other, float interpolation)
     {
-        return new Vector4f(x + (other.x - x) * interpolation, y + (other.y - y) * interpolation, z + (other.z - z) * interpolation, w + (other.w - w) * interpolation);
+        return new Vector4f(
+                MathUtils.lerp(x, other.x, interpolation),
+                MathUtils.lerp(y, other.y, interpolation),
+                MathUtils.lerp(z, other.z, interpolation),
+                MathUtils.lerp(w, other.w, interpolation)
+        );
     }
-
-
-    public boolean isZero()
-    {
-        return x == 0 && y == 0 && z == 0 && w == 0;
-    }
-
 
     @Override
     public String toString()
     {
         return "Vector4f(" + x + ", " + y + ", " + z + ", " + w + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
         if (this == obj) return true;
         if (!(obj instanceof Vector4f other)) return false;
 
-        return Float.compare(x, other.x) == 0 && Float.compare(y, other.y) == 0 && Float.compare(z, other.z) == 0 && Float.compare(w, other.w) == 0;
+        return Float.compare(x, other.x) == 0 &&
+                Float.compare(y, other.y) == 0 &&
+                Float.compare(z, other.z) == 0 &&
+                Float.compare(w, other.w) == 0;
     }
-
     @Override
     public int hashCode()
     {

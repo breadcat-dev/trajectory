@@ -23,7 +23,7 @@ Part of the TANK Series.
 - float, double and int variants
 - Vector arithmetic
 - Dot product
-- Cross product (3D)
+- Cross product
 - Distance and length calculations
 - Normalization (floating-point vectors)
 

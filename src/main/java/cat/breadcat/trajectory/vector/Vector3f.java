@@ -1,12 +1,15 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
+
 public final class Vector3f
 {
     public static final Vector3f ZERO = new Vector3f(0, 0, 0);
-    public static final Vector3f ONE  = new Vector3f(1, 1, 1);
-    public static final Vector3f UNIT_X  = new Vector3f(1, 0, 0);
-    public static final Vector3f UNIT_Y  = new Vector3f(0, 1, 0);
-    public static final Vector3f UNIT_Z  = new Vector3f(0, 0, 1);
+    public static final Vector3f ONE = new Vector3f(1, 1, 1);
+    public static final Vector3f UNIT_X = new Vector3f(1, 0, 0);
+    public static final Vector3f UNIT_Y = new Vector3f(0, 1, 0);
+    public static final Vector3f UNIT_Z = new Vector3f(0, 0, 1);
 
     public final float x;
     public final float y;
@@ -20,123 +23,140 @@ public final class Vector3f
     }
 
 
-    private float sumProducts(float a, float b, float c)
+    private static float sumProducts(float a1, float a2, float a3,
+                               float b1, float b2, float b3)
     {
-        return x * a + y * b + z * c;
+        return a1 * b1 +
+                a2 * b2 +
+                a3 * b3;
     }
 
 
     public Vector3f add(Vector3f other)
     {
-        return new Vector3f(x + other.x, y + other.y, z + other.z);
+        return new Vector3f(
+                x + other.x,
+                y + other.y,
+                z + other.z
+        );
     }
-
     public Vector3f subtract(Vector3f other)
     {
-        return new Vector3f(x - other.x, y - other.y, z - other.z);
+        return new Vector3f(
+                x - other.x,
+                y - other.y,
+                z - other.z
+        );
     }
-
-    public Vector3f multiply(Vector3f other)
-    {
-        return new Vector3f(x * other.x, y * other.y, z * other.z);
-    }
-
     public Vector3f multiply(float other)
     {
-        return new Vector3f(x * other, y * other, z * other);
+        return new Vector3f(
+                x * other,
+                y * other,
+                z * other
+        );
     }
-
-    public Vector3f divide(Vector3f other)
+    public Vector3f multiply(Vector3f other)
     {
-        return new Vector3f(x / other.x, y / other.y, z / other.z);
+        return new Vector3f(
+                x * other.x,
+                y * other.y,
+                z * other.z
+        );
     }
-
     public Vector3f divide(float other)
     {
-        return new Vector3f(x / other, y / other, z / other);
+        if(Float.compare(other, 0.0f) == 0)
+            throw new DivisionByZeroException("other");
+
+        return new Vector3f(
+                x / other,
+                y / other,
+                z / other
+        );
     }
-
-
-    public float dot(Vector3f other)
+    public Vector3f divide(Vector3f other)
     {
-        return sumProducts(other.x, other.y, other.z);
-    }
+        if(
+                Float.compare(other.x, 0.0f) == 0 &&
+                        Float.compare(other.y, 0.0f) == 0 &&
+                        Float.compare(other.z, 0.0f) == 0
+        )
+            throw new DivisionByZeroException("other");
 
-    public Vector3f cross(Vector3f other)
-    {
-        return new Vector3f(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+        return new Vector3f(
+                x / other.x,
+                y / other.y,
+                z / other.z
+        );
     }
-
 
     public float length()
     {
         return (float)Math.sqrt(lengthSquared());
     }
-
     public float lengthSquared()
     {
-        return sumProducts(x, y, z);
+        return sumProducts(x, y, z, x, y, z);
     }
-
     public float distance(Vector3f other)
     {
         return (float)Math.sqrt(distanceSquared(other));
     }
-
     public float distanceSquared(Vector3f other)
     {
         float dx = x - other.x;
         float dy = y - other.y;
         float dz = z - other.z;
 
-        return dx * dx + dy * dy + dz * dz;
+        return sumProducts(dx, dy, dz, dx, dy, dz);
     }
 
-
+    public float dot(Vector3f other)
+    {
+        return sumProducts(x, y, z, other.x, other.y, other.z);
+    }
+    public Vector3f cross(Vector3f other)
+    {
+        return new Vector3f(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+    }
     public Vector3f normalize()
     {
         float length = length();
 
-        if(length == 0)
-            throw new ArithmeticException("Cannot normalize zero vector.");
+        if(MathUtils.approximatelyZero(length))
+            throw new DivisionByZeroException("length");
 
         return divide(length);
     }
-
-
     public Vector3f negate()
     {
         return new Vector3f(-x, -y, -z);
     }
-
-
     public Vector3f lerp(Vector3f other, float interpolation)
     {
-        return new Vector3f(x + (other.x - x) * interpolation, y + (other.y - y) * interpolation, z + (other.z - z) * interpolation);
+        return new Vector3f(
+                MathUtils.lerp(x, other.x, interpolation),
+                MathUtils.lerp(y, other.y, interpolation),
+                MathUtils.lerp(z, other.z, interpolation)
+        );
     }
-
-
-    public boolean isZero()
-    {
-        return x == 0 && y == 0 && z == 0;
-    }
-
 
     @Override
     public String toString()
     {
         return "Vector3f(" + x + ", " + y + ", " + z + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
         if (this == obj) return true;
         if (!(obj instanceof Vector3f other)) return false;
 
-        return Float.compare(x, other.x) == 0 && Float.compare(y, other.y) == 0 && Float.compare(z, other.z) == 0;
+        return Float.compare(x, other.x) == 0 &&
+                Float.compare(y, other.y) == 0 &&
+                Float.compare(z, other.z) == 0;
     }
-
     @Override
     public int hashCode()
     {

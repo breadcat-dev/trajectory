@@ -1,7 +1,7 @@
 package cat.breadcat.trajectory.matrix;
 
-import cat.breadcat.toolbox.util.MathUtil;
-import cat.breadcat.trajectory.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector2f;
 
 public final class Matrix2f
@@ -49,7 +49,6 @@ public final class Matrix2f
                 m10 + other.m10, m11 + other.m11
         );
     }
-
     public Matrix2f subtract(Matrix2f other)
     {
         return new Matrix2f(
@@ -57,7 +56,6 @@ public final class Matrix2f
                 m10 - other.m10, m11 - other.m11
         );
     }
-
     public Matrix2f multiply(float other)
     {
         return new Matrix2f(
@@ -65,7 +63,6 @@ public final class Matrix2f
                 m10 * other, m11 * other
         );
     }
-
     public Matrix2f multiply(Matrix2f other)
     {
         return new Matrix2f(
@@ -73,7 +70,6 @@ public final class Matrix2f
                 sumProducts(m10, m11, other.m00, other.m10), sumProducts(m10, m11, other.m01, other.m11)
         );
     }
-
     public Vector2f multiply(Vector2f other)
     {
         return new Vector2f(
@@ -81,7 +77,6 @@ public final class Matrix2f
                 sumProducts(m10, m11, other.x, other.y)
         );
     }
-
     public Matrix2f divide(float other)
     {
         if(Float.compare(other, 0.0f) == 0)
@@ -92,19 +87,16 @@ public final class Matrix2f
                 m10 / other, m11 / other
         );
     }
-
     public Matrix2f divide(Matrix2f other)
     {
         return multiply(other.inverse());
     }
-
 
     public float determinant()
     {
         return m00 * m11 -
                 m01 * m10;
     }
-
 
     public Matrix2f negate()
     {
@@ -113,12 +105,11 @@ public final class Matrix2f
                 -m10, -m11
         );
     }
-
     public Matrix2f inverse()
     {
         float determinant = determinant();
 
-        if(MathUtil.approximatelyEqual(determinant, 0.0, EPSILON))
+        if(MathUtils.approximatelyZero(determinant))
             throw new DivisionByZeroException("determinant");
 
 
@@ -127,12 +118,10 @@ public final class Matrix2f
                 -m10, m00
         ).divide(determinant);
     }
-
     public Matrix2f transpose()
     {
         return new Matrix2f(m00, m10, m01, m11);
     }
-
 
     @Override
     public String toString()
@@ -142,7 +131,6 @@ public final class Matrix2f
                 + "    [" + m10 + " " + m11 + "]\n"
                 + "]";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -152,7 +140,6 @@ public final class Matrix2f
         return Float.compare(m00, other.m00) == 0 && Float.compare(m01, other.m01) == 0 &&
                 Float.compare(m10, other.m10) == 0 && Float.compare(m11, other.m11) == 0;
     }
-
     @Override
     public int hashCode()
     {

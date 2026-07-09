@@ -1,12 +1,15 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
+
 public final class Vector2f
 {
     public static final Vector2f ZERO = new Vector2f(0, 0);
-    public static final Vector2f ONE  = new Vector2f(1, 1);
-    public static final Vector2f UNIT_X  = new Vector2f(1, 0);
-    public static final Vector2f UNIT_Y  = new Vector2f(0, 1);
-    
+    public static final Vector2f ONE = new Vector2f(1, 1);
+    public static final Vector2f UNIT_X = new Vector2f(1, 0);
+    public static final Vector2f UNIT_Y = new Vector2f(0, 1);
+
     public final float x;
     public final float y;
 
@@ -17,117 +20,125 @@ public final class Vector2f
     }
 
 
-    private float sumProducts(float a, float b)
+    private static float sumProducts(float a1, float a2,
+                                      float b1, float b2)
     {
-        return x * a + y * b;
+        return a1 * b1 +
+                a2 * b2;
     }
 
 
     public Vector2f add(Vector2f other)
     {
-        return new Vector2f(x + other.x, y + other.y);
+        return new Vector2f(
+                x + other.x,
+                y + other.y
+        );
     }
-
     public Vector2f subtract(Vector2f other)
     {
-        return new Vector2f(x - other.x, y - other.y);
+        return new Vector2f(
+                x - other.x,
+                y - other.y
+        );
     }
-
-    public Vector2f multiply(Vector2f other)
-    {
-        return new Vector2f(x * other.x, y * other.y);
-    }
-
     public Vector2f multiply(float other)
     {
-        return new Vector2f(x * other, y * other);
+        return new Vector2f(
+                x * other,
+                y * other
+        );
     }
-
-    public Vector2f divide(Vector2f other)
+    public Vector2f multiply(Vector2f other)
     {
-        return new Vector2f(x / other.x, y / other.y);
+        return new Vector2f(
+                x * other.x,
+                y * other.y
+        );
     }
-
     public Vector2f divide(float other)
     {
-        return new Vector2f(x / other, y / other);
+        if(Float.compare(other, 0.0f) == 0)
+            throw new DivisionByZeroException("other");
+
+        return new Vector2f(
+                x / other,
+                y / other
+        );
     }
-
-
-    public float dot(Vector2f other)
+    public Vector2f divide(Vector3f other)
     {
-        return sumProducts(other.x, other.y);
-    }
+        if(
+                Float.compare(other.x, 0.0f) == 0 &&
+                Float.compare(other.y, 0.0f) == 0
+        )
+            throw new DivisionByZeroException("other");
 
+        return new Vector2f(
+                x / other.x,
+                y / other.y
+        );
+    }
 
     public float length()
     {
-        return (float)Math.sqrt(lengthSquared()); // distance from 0,0 to vector
+        return (float)Math.sqrt(lengthSquared());
     }
-
     public float lengthSquared()
     {
-        return sumProducts(x, y);
+        return sumProducts(x, y, x, y);
     }
-
     public float distance(Vector2f other)
     {
         return (float)Math.sqrt(distanceSquared(other));
     }
-
     public float distanceSquared(Vector2f other)
     {
         float dx = x - other.x;
         float dy = y - other.y;
 
-        return dx * dx + dy * dy;
+        return sumProducts(dx, dy, dx, dy);
     }
 
-
+    public float dot(Vector2f other)
+    {
+        return sumProducts(x, y, other.x, other.y);
+    }
     public Vector2f normalize()
     {
         float length = length();
 
-        if(length == 0)
-            throw new ArithmeticException("Cannot normalize zero vector.");
+        if(MathUtils.approximatelyZero(length))
+            throw new DivisionByZeroException("length");
 
         return divide(length);
     }
-
-
     public Vector2f negate()
     {
         return new Vector2f(-x, -y);
     }
-
-
     public Vector2f lerp(Vector2f other, float interpolation)
     {
-        return new Vector2f(x + (other.x - x) * interpolation, y + (other.y - y) * interpolation);
+        return new Vector2f(
+                MathUtils.lerp(x, other.x, interpolation),
+                MathUtils.lerp(y, other.y, interpolation)
+        );
     }
-
-
-    public boolean isZero()
-    {
-        return x == 0 && y == 0;
-    }
-
 
     @Override
     public String toString()
     {
         return "Vector2f(" + x + ", " + y + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
         if (this == obj) return true;
         if (!(obj instanceof Vector2f other)) return false;
 
-        return Float.compare(x, other.x) == 0 && Float.compare(y, other.y) == 0;
+        return Float.compare(x, other.x) == 0 &&
+                Float.compare(y, other.y) == 0;
     }
-
     @Override
     public int hashCode()
     {

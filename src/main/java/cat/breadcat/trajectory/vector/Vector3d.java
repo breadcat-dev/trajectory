@@ -1,12 +1,15 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
+
 public final class Vector3d
 {
     public static final Vector3d ZERO = new Vector3d(0, 0, 0);
-    public static final Vector3d ONE  = new Vector3d(1, 1, 1);
-    public static final Vector3d UNIT_X  = new Vector3d(1, 0, 0);
-    public static final Vector3d UNIT_Y  = new Vector3d(0, 1, 0);
-    public static final Vector3d UNIT_Z  = new Vector3d(0, 0, 1);
+    public static final Vector3d ONE = new Vector3d(1, 1, 1);
+    public static final Vector3d UNIT_X = new Vector3d(1, 0, 0);
+    public static final Vector3d UNIT_Y = new Vector3d(0, 1, 0);
+    public static final Vector3d UNIT_Z = new Vector3d(0, 0, 1);
 
     public final double x;
     public final double y;
@@ -20,123 +23,144 @@ public final class Vector3d
     }
 
 
-    private double sumProducts(double a, double b, double c)
+    private static double sumProducts(double a1, double a2, double a3,
+                               double b1, double b2, double b3)
     {
-        return x * a + y * b + z * c;
+        return a1 * b1 +
+                a2 * b2 +
+                a3 * b3;
     }
 
 
     public Vector3d add(Vector3d other)
     {
-        return new Vector3d(x + other.x, y + other.y, z + other.z);
+        return new Vector3d(
+                x + other.x,
+                y + other.y,
+                z + other.z
+        );
     }
-
     public Vector3d subtract(Vector3d other)
     {
-        return new Vector3d(x - other.x, y - other.y, z - other.z);
+        return new Vector3d(
+                x - other.x,
+                y - other.y,
+                z - other.z
+        );
     }
-
-    public Vector3d multiply(Vector3d other)
-    {
-        return new Vector3d(x * other.x, y * other.y, z * other.z);
-    }
-
     public Vector3d multiply(double other)
     {
-        return new Vector3d(x * other, y * other, z * other);
+        return new Vector3d(
+                x * other,
+                y * other,
+                z * other
+        );
     }
-
-    public Vector3d divide(Vector3d other)
+    public Vector3d multiply(Vector3d other)
     {
-        return new Vector3d(x / other.x, y / other.y, z / other.z);
+        return new Vector3d(
+                x * other.x,
+                y * other.y,
+                z * other.z
+        );
     }
-
     public Vector3d divide(double other)
     {
-        return new Vector3d(x / other, y / other, z / other);
+        if(Double.compare(other, 0.0) == 0)
+            throw new DivisionByZeroException("other");
+
+        return new Vector3d(
+                x / other,
+                y / other,
+                z / other
+        );
     }
-
-
-    public double dot(Vector3d other)
+    public Vector3d divide(Vector3f other)
     {
-        return sumProducts(other.x, other.y, other.z);
-    }
+        if(
+                Double.compare(other.x, 0.0) == 0 &&
+                        Double.compare(other.y, 0.0) == 0 &&
+                        Double.compare(other.z, 0.0) == 0
+        )
+            throw new DivisionByZeroException("other");
 
-    public Vector3d cross(Vector3d other)
-    {
-        return new Vector3d(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+        return new Vector3d(
+                x / other.x,
+                y / other.y,
+                z / other.z
+        );
     }
-
 
     public double length()
     {
         return Math.sqrt(lengthSquared());
     }
-
     public double lengthSquared()
     {
-        return sumProducts(x, y, z);
+        return sumProducts(x, y, z, x, y, z);
     }
-
     public double distance(Vector3d other)
     {
         return Math.sqrt(distanceSquared(other));
     }
-
     public double distanceSquared(Vector3d other)
     {
         double dx = x - other.x;
         double dy = y - other.y;
         double dz = z - other.z;
 
-        return dx * dx + dy * dy + dz * dz;
+        return sumProducts(dx, dy, dz, dx, dy, dz);
     }
 
-
+    public double dot(Vector3d other)
+    {
+        return sumProducts(x, y, z, other.x, other.y, other.z);
+    }
+    public Vector3d cross(Vector3d other)
+    {
+        return new Vector3d(
+                y * other.z - z * other.y,
+                z * other.x - x * other.z,
+                x * other.y - y * other.x
+        );
+    }
     public Vector3d normalize()
     {
         double length = length();
 
-        if(length == 0)
-            throw new ArithmeticException("Cannot normalize zero vector.");
+        if(MathUtils.approximatelyZero(length))
+            throw new DivisionByZeroException("length");
 
         return divide(length);
     }
-
-
     public Vector3d negate()
     {
         return new Vector3d(-x, -y, -z);
     }
-
-
     public Vector3d lerp(Vector3d other, double interpolation)
     {
-        return new Vector3d(x + (other.x - x) * interpolation, y + (other.y - y) * interpolation, z + (other.z - z) * interpolation);
+        return new Vector3d(
+                MathUtils.lerp(x, other.x, interpolation),
+                MathUtils.lerp(y, other.y, interpolation),
+                MathUtils.lerp(z, other.z, interpolation)
+        );
     }
-
-
-    public boolean isZero()
-    {
-        return x == 0 && y == 0 && z == 0;
-    }
-
 
     @Override
     public String toString()
     {
         return "Vector3d(" + x + ", " + y + ", " + z + ")";
     }
-
     @Override
     public boolean equals(Object obj)
     {
         if (this == obj) return true;
         if (!(obj instanceof Vector3d other)) return false;
 
-        return Double.compare(x, other.x) == 0 && Double.compare(y, other.y) == 0 && Double.compare(z, other.z) == 0;
+        return Double.compare(x, other.x) == 0 &&
+                Double.compare(y, other.y) == 0 &&
+                Double.compare(z, other.z) == 0;
     }
-
     @Override
     public int hashCode()
     {

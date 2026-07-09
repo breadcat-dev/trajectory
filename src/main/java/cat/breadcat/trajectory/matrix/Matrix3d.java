@@ -1,8 +1,7 @@
 package cat.breadcat.trajectory.matrix;
 
-import cat.breadcat.toolbox.util.MathUtil;
-import cat.breadcat.trajectory.exception.DivisionByZeroException;
-import cat.breadcat.trajectory.vector.Vector2d;
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector3d;
 
 public final class Matrix3d
@@ -61,7 +60,6 @@ public final class Matrix3d
                 m20 + other.m20, m21 + other.m21, m22 + other.m22
         );
     }
-
     public Matrix3d subtract(Matrix3d other)
     {
         return new Matrix3d(
@@ -70,7 +68,6 @@ public final class Matrix3d
                 m20 - other.m20, m21 - other.m21, m22 - other.m22
         );
     }
-
     public Matrix3d multiply(double other)
     {
         return new Matrix3d(
@@ -79,7 +76,6 @@ public final class Matrix3d
                 m20 * other, m21 * other, m22 * other
         );
     }
-
     public Vector3d multiply(Vector3d other)
     {
         return new Vector3d(
@@ -88,7 +84,6 @@ public final class Matrix3d
                 sumProducts(m20, m21, m22, other.x, other.y, other.z)
         );
     }
-
     public Matrix3d multiply(Matrix3d other)
     {
         return new Matrix3d(
@@ -97,7 +92,6 @@ public final class Matrix3d
                 sumProducts(m20, m21, m22, other.m00, other.m10, other.m20), sumProducts(m20, m21, m22, other.m01, other.m11, other.m21), sumProducts(m20, m21, m22, other.m02, other.m12, other.m22)
         );
     }
-
     public Matrix3d divide(double other)
     {
         if(Double.compare(other, 0.0) == 0)
@@ -109,12 +103,10 @@ public final class Matrix3d
                 m20 / other, m21 / other, m22 / other
         );
     }
-
     public Matrix3d divide(Matrix3d other)
     {
         return multiply(other.inverse());
     }
-
 
     public double determinant()
     {
@@ -122,7 +114,6 @@ public final class Matrix3d
                 m01 * (m10 * m22 - m20 * m12) +
                 m02 * (m10 * m21 - m20 * m11);
     }
-
 
     public Matrix3d negate()
     {
@@ -132,12 +123,11 @@ public final class Matrix3d
                 -m20, -m21, -m22
         );
     }
-
     public Matrix3d inverse()
     {
         double determinant = determinant();
 
-        if(MathUtil.approximatelyEqual(determinant, 0.0, EPSILON))
+        if(MathUtils.approximatelyZero(determinant))
             throw new DivisionByZeroException("determinant");
 
 
@@ -159,7 +149,6 @@ public final class Matrix3d
                 c02, c12, c22
         ).divide(determinant);
     }
-
     public Matrix3d transpose()
     {
         return new Matrix3d(
@@ -168,7 +157,6 @@ public final class Matrix3d
                 m02, m12, m22
         );
     }
-
 
     @Override
     public String toString()
@@ -179,7 +167,6 @@ public final class Matrix3d
                 + "    [" + m20 + " " + m21 + " " + m22 + "]\n"
                 + "]";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -190,7 +177,6 @@ public final class Matrix3d
                 Double.compare(m10, other.m10) == 0 && Double.compare(m11, other.m11) == 0 && Double.compare(m12, other.m12) == 0 &&
                 Double.compare(m20, other.m20) == 0 && Double.compare(m21, other.m21) == 0 && Double.compare(m22, other.m22) == 0;
     }
-
     @Override
     public int hashCode()
     {

@@ -1,6 +1,5 @@
 package cat.breadcat;
 
-import cat.breadcat.trajectory.matrix.Matrix3d;
 import cat.breadcat.trajectory.matrix.Matrix4d;
 
 public class Main

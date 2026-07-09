@@ -1,7 +1,7 @@
 package cat.breadcat.trajectory.matrix;
 
-import cat.breadcat.toolbox.util.MathUtil;
-import cat.breadcat.trajectory.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector4d;
 
 public final class Matrix4d
@@ -63,6 +63,7 @@ public final class Matrix4d
         return a1 * b1 + a2 * b2 + a3 * b3 + a4 * b4;
     }
 
+
     public Matrix4d add(Matrix4d other)
     {
         return new Matrix4d(
@@ -72,7 +73,6 @@ public final class Matrix4d
                 m30 + other.m30, m31 + other.m31, m32 + other.m32, m33 + other.m33
         );
     }
-
     public Matrix4d subtract(Matrix4d other)
     {
         return new Matrix4d(
@@ -82,7 +82,6 @@ public final class Matrix4d
                 m30 - other.m30, m31 - other.m31, m32 - other.m32, m33 - other.m33
         );
     }
-
     public Matrix4d multiply(double other)
     {
         return new Matrix4d(
@@ -92,7 +91,6 @@ public final class Matrix4d
                 m30 * other, m31 * other, m32 * other, m33 * other
         );
     }
-
     public Vector4d multiply(Vector4d other)
     {
         return new Vector4d(
@@ -102,7 +100,6 @@ public final class Matrix4d
                 sumProducts(m30, m31, m32, m33, other.x, other.y, other.z, other.w)
         );
     }
-
     public Matrix4d multiply(Matrix4d other)
     {
         return new Matrix4d(
@@ -112,7 +109,6 @@ public final class Matrix4d
                 sumProducts(m30, m31, m32, m33, other.m00, other.m10, other.m20, other.m30), sumProducts(m30, m31, m32, m33, other.m01, other.m11, other.m21, other.m31), sumProducts(m30, m31, m32, m33, other.m02, other.m12, other.m22, other.m32), sumProducts(m30, m31, m32, m33, other.m03, other.m13, other.m23, other.m33)
         );
     }
-
     public Matrix4d divide(double other)
     {
         if(Double.compare(other, 0.0) == 0)
@@ -125,12 +121,10 @@ public final class Matrix4d
                 m30 / other, m31 / other, m32 / other, m33 / other
         );
     }
-
     public Matrix4d divide(Matrix4d other)
     {
         return multiply(other.inverse());
     }
-
 
     public double determinant()
     {
@@ -139,7 +133,6 @@ public final class Matrix4d
                 m02 * (m10 * (m21 * m33 - m23 * m31) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21)) -
                 m03 * (m10 * (m21 * m32 - m22 * m31) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
     }
-
 
     public Matrix4d negate()
     {
@@ -150,12 +143,11 @@ public final class Matrix4d
                 -m30, -m31, -m32, -m33
         );
     }
-
     public Matrix4d inverse()
     {
         double determinant = determinant();
 
-        if(MathUtil.approximatelyEqual(determinant, 0.0, EPSILON))
+        if(MathUtils.approximatelyZero(determinant))
             throw new DivisionByZeroException("determinant");
 
 
@@ -279,7 +271,6 @@ public final class Matrix4d
                 c30, c31, c32, c33
         ).divide(determinant);
     }
-
     public Matrix4d transpose()
     {
         return new Matrix4d(
@@ -289,7 +280,6 @@ public final class Matrix4d
                 m03, m13, m23, m33
         );
     }
-
 
     @Override
     public String toString()
@@ -301,7 +291,6 @@ public final class Matrix4d
                 + "    [" + m30 + " " + m31 + " " + m32 + " " + m33 + "]\n"
                 + "]";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -313,7 +302,6 @@ public final class Matrix4d
                 && Double.compare(m20, other.m20) == 0 && Double.compare(m21, other.m21) == 0 && Double.compare(m22, other.m22) == 0 && Double.compare(m23, other.m23) == 0
                 && Double.compare(m30, other.m30) == 0 && Double.compare(m31, other.m31) == 0 && Double.compare(m32, other.m32) == 0 && Double.compare(m33, other.m33) == 0;
     }
-
     @Override
     public int hashCode()
     {

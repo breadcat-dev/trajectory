@@ -1,7 +1,7 @@
 package cat.breadcat.trajectory.matrix;
 
-import cat.breadcat.toolbox.util.MathUtil;
-import cat.breadcat.trajectory.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.exception.DivisionByZeroException;
+import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector3f;
 
 public final class Matrix3f
@@ -60,7 +60,6 @@ public final class Matrix3f
                 m20 + other.m20, m21 + other.m21, m22 + other.m22
         );
     }
-
     public Matrix3f subtract(Matrix3f other)
     {
         return new Matrix3f(
@@ -69,7 +68,6 @@ public final class Matrix3f
                 m20 - other.m20, m21 - other.m21, m22 - other.m22
         );
     }
-
     public Matrix3f multiply(float other)
     {
         return new Matrix3f(
@@ -78,7 +76,6 @@ public final class Matrix3f
                 m20 * other, m21 * other, m22 * other
         );
     }
-
     public Vector3f multiply(Vector3f other)
     {
         return new Vector3f(
@@ -87,7 +84,6 @@ public final class Matrix3f
                 sumProducts(m20, m21, m22, other.x, other.y, other.z)
         );
     }
-
     public Matrix3f multiply(Matrix3f other)
     {
         return new Matrix3f(
@@ -96,7 +92,6 @@ public final class Matrix3f
                 sumProducts(m20, m21, m22, other.m00, other.m10, other.m20), sumProducts(m20, m21, m22, other.m01, other.m11, other.m21), sumProducts(m20, m21, m22, other.m02, other.m12, other.m22)
         );
     }
-
     public Matrix3f divide(float other)
     {
         if(Float.compare(other, 0.0f) == 0)
@@ -108,12 +103,10 @@ public final class Matrix3f
                 m20 / other, m21 / other, m22 / other
         );
     }
-
     public Matrix3f divide(Matrix3f other)
     {
         return multiply(other.inverse());
     }
-
 
     public float determinant()
     {
@@ -121,7 +114,6 @@ public final class Matrix3f
                 m01 * (m10 * m22 - m20 * m12) +
                 m02 * (m10 * m21 - m20 * m11);
     }
-
 
     public Matrix3f negate()
     {
@@ -131,12 +123,11 @@ public final class Matrix3f
                 -m20, -m21, -m22
         );
     }
-
     public Matrix3f inverse()
     {
         float determinant = determinant();
 
-        if(MathUtil.approximatelyEqual(determinant, 0.0, EPSILON))
+        if(MathUtils.approximatelyZero(determinant))
             throw new DivisionByZeroException("determinant");
 
 
@@ -158,7 +149,6 @@ public final class Matrix3f
                 c02, c12, c22
         ).divide(determinant);
     }
-
     public Matrix3f transpose()
     {
         return new Matrix3f(
@@ -178,7 +168,6 @@ public final class Matrix3f
                 + "    [" + m20 + " " + m21 + " " + m22 + "]\n"
                 + "]";
     }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -189,7 +178,6 @@ public final class Matrix3f
                 Float.compare(m10, other.m10) == 0 && Float.compare(m11, other.m11) == 0 && Float.compare(m12, other.m12) == 0 &&
                 Float.compare(m20, other.m20) == 0 && Float.compare(m21, other.m21) == 0 && Float.compare(m22, other.m22) == 0;
     }
-
     @Override
     public int hashCode()
     {

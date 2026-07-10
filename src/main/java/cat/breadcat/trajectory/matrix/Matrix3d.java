@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.matrix;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector3d;
@@ -47,6 +48,14 @@ public final class Matrix3d
     )
     {
         return a1 * b1 + a2 * b2 + a3 * b3;
+    }
+
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
     }
 
 
@@ -156,14 +165,30 @@ public final class Matrix3d
         );
     }
 
+    public boolean approximatelyEqual(Matrix3d other)
+    {
+        return
+                approximatelyEqual(m00, other.m00) && approximatelyEqual(m01, other.m01) && approximatelyEqual(m02, other.m02) &&
+                approximatelyEqual(m10, other.m10) && approximatelyEqual(m11, other.m11) && approximatelyEqual(m12, other.m12) &&
+                approximatelyEqual(m20, other.m20) && approximatelyEqual(m21, other.m21) && approximatelyEqual(m22, other.m22);
+    }
+
     @Override
     public String toString()
     {
-        return "Matrix3d [\n"
-                + "    [" + m00 + " " + m01 + " " + m02 + "]\n"
-                + "    [" + m10 + " " + m11 + " " + m12 + "]\n"
-                + "    [" + m20 + " " + m21 + " " + m22 + "]\n"
-                + "]";
+        return String.format(
+                """
+                Matrix3d
+                [
+                    [%+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f]
+                ]
+                """,
+                m00, m01, m02,
+                m10, m11, m12,
+                m20, m21, m22
+        );
     }
     @Override
     public boolean equals(Object obj)
@@ -171,7 +196,8 @@ public final class Matrix3d
         if (this == obj) return true;
         if (!(obj instanceof Matrix3d other)) return false;
 
-        return Double.compare(m00, other.m00) == 0 && Double.compare(m01, other.m01) == 0 && Double.compare(m02, other.m02) == 0 &&
+        return
+                Double.compare(m00, other.m00) == 0 && Double.compare(m01, other.m01) == 0 && Double.compare(m02, other.m02) == 0 &&
                 Double.compare(m10, other.m10) == 0 && Double.compare(m11, other.m11) == 0 && Double.compare(m12, other.m12) == 0 &&
                 Double.compare(m20, other.m20) == 0 && Double.compare(m21, other.m21) == 0 && Double.compare(m22, other.m22) == 0;
     }

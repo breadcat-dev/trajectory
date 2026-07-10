@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.matrix;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector4d;
@@ -61,6 +62,14 @@ public final class Matrix4d
         return a1 * b1 + a2 * b2 + a3 * b3 + a4 * b4;
     }
 
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
+    }
+
 
     public Matrix4d add(Matrix4d other)
     {
@@ -80,13 +89,13 @@ public final class Matrix4d
                 m30 - other.m30, m31 - other.m31, m32 - other.m32, m33 - other.m33
         );
     }
-    public Matrix4d multiply(double other)
+    public Matrix4d multiply(double scalar)
     {
         return new Matrix4d(
-                m00 * other, m01 * other, m02 * other, m03 * other,
-                m10 * other, m11 * other, m12 * other, m13 * other,
-                m20 * other, m21 * other, m22 * other, m23 * other,
-                m30 * other, m31 * other, m32 * other, m33 * other
+                m00 * scalar, m01 * scalar, m02 * scalar, m03 * scalar,
+                m10 * scalar, m11 * scalar, m12 * scalar, m13 * scalar,
+                m20 * scalar, m21 * scalar, m22 * scalar, m23 * scalar,
+                m30 * scalar, m31 * scalar, m32 * scalar, m33 * scalar
         );
     }
     public Vector4d multiply(Vector4d other)
@@ -107,16 +116,16 @@ public final class Matrix4d
                 sumProducts(m30, m31, m32, m33, other.m00, other.m10, other.m20, other.m30), sumProducts(m30, m31, m32, m33, other.m01, other.m11, other.m21, other.m31), sumProducts(m30, m31, m32, m33, other.m02, other.m12, other.m22, other.m32), sumProducts(m30, m31, m32, m33, other.m03, other.m13, other.m23, other.m33)
         );
     }
-    public Matrix4d divide(double other)
+    public Matrix4d divide(double scalar)
     {
-        if(Double.compare(other, 0.0) == 0)
-            throw new DivisionByZeroException("other");
+        if(Double.compare(scalar, 0.0) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Matrix4d(
-                m00 / other, m01 / other, m02 / other, m03 / other,
-                m10 / other, m11 / other, m12 / other, m13 / other,
-                m20 / other, m21 / other, m22 / other, m23 / other,
-                m30 / other, m31 / other, m32 / other, m33 / other
+                m00 / scalar, m01 / scalar, m02 / scalar, m03 / scalar,
+                m10 / scalar, m11 / scalar, m12 / scalar, m13 / scalar,
+                m20 / scalar, m21 / scalar, m22 / scalar, m23 / scalar,
+                m30 / scalar, m31 / scalar, m32 / scalar, m33 / scalar
         );
     }
     public Matrix4d divide(Matrix4d other)
@@ -279,15 +288,33 @@ public final class Matrix4d
         );
     }
 
+    public boolean approximatelyEqual(Matrix4d other)
+    {
+        return
+                approximatelyEqual(m00, other.m00) && approximatelyEqual(m01, other.m01) && approximatelyEqual(m02, other.m02) && approximatelyEqual(m03, other.m03) &&
+                approximatelyEqual(m10, other.m10) && approximatelyEqual(m11, other.m11) && approximatelyEqual(m12, other.m12) && approximatelyEqual(m13, other.m13) &&
+                approximatelyEqual(m20, other.m20) && approximatelyEqual(m21, other.m21) && approximatelyEqual(m22, other.m22) && approximatelyEqual(m23, other.m23) &&
+                approximatelyEqual(m30, other.m30) && approximatelyEqual(m31, other.m31) && approximatelyEqual(m32, other.m32) && approximatelyEqual(m33, other.m33);
+    }
+
     @Override
     public String toString()
     {
-        return "Matrix4d [\n"
-                + "    [" + m00 + " " + m01 + " " + m02 + " " + m03 + "]\n"
-                + "    [" + m10 + " " + m11 + " " + m12 + " " + m13 + "]\n"
-                + "    [" + m20 + " " + m21 + " " + m22 + " " + m23 + "]\n"
-                + "    [" + m30 + " " + m31 + " " + m32 + " " + m33 + "]\n"
-                + "]";
+        return String.format(
+                """
+                Matrix4d
+                [
+                    [%+.6f, %+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f, %+.6f]
+                ]
+                """,
+                m00, m01, m02, m03,
+                m10, m11, m12, m13,
+                m20, m21, m22, m23,
+                m30, m31, m32, m33
+                );
     }
     @Override
     public boolean equals(Object obj)
@@ -295,10 +322,11 @@ public final class Matrix4d
         if (this == obj) return true;
         if (!(obj instanceof Matrix4d other)) return false;
 
-        return Double.compare(m00, other.m00) == 0 && Double.compare(m01, other.m01) == 0 && Double.compare(m02, other.m02) == 0 && Double.compare(m03, other.m03) == 0
-                && Double.compare(m10, other.m10) == 0 && Double.compare(m11, other.m11) == 0 && Double.compare(m12, other.m12) == 0 && Double.compare(m13, other.m13) == 0
-                && Double.compare(m20, other.m20) == 0 && Double.compare(m21, other.m21) == 0 && Double.compare(m22, other.m22) == 0 && Double.compare(m23, other.m23) == 0
-                && Double.compare(m30, other.m30) == 0 && Double.compare(m31, other.m31) == 0 && Double.compare(m32, other.m32) == 0 && Double.compare(m33, other.m33) == 0;
+        return
+                Double.compare(m00, other.m00) == 0 && Double.compare(m01, other.m01) == 0 && Double.compare(m02, other.m02) == 0 && Double.compare(m03, other.m03) == 0 &&
+                Double.compare(m10, other.m10) == 0 && Double.compare(m11, other.m11) == 0 && Double.compare(m12, other.m12) == 0 && Double.compare(m13, other.m13) == 0 &&
+                Double.compare(m20, other.m20) == 0 && Double.compare(m21, other.m21) == 0 && Double.compare(m22, other.m22) == 0 && Double.compare(m23, other.m23) == 0 &&
+                Double.compare(m30, other.m30) == 0 && Double.compare(m31, other.m31) == 0 && Double.compare(m32, other.m32) == 0 && Double.compare(m33, other.m33) == 0;
     }
     @Override
     public int hashCode()

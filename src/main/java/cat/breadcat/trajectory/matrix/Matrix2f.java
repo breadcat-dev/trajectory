@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.matrix;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector2f;
@@ -37,6 +38,14 @@ public final class Matrix2f
     )
     {
         return a1 * b1 + a2 * b2;
+    }
+
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
     }
 
 
@@ -121,13 +130,27 @@ public final class Matrix2f
         return new Matrix2f(m00, m10, m01, m11);
     }
 
+    public boolean approximatelyEqual(Matrix2f other)
+    {
+        return
+                approximatelyEqual(m00, other.m00) && approximatelyEqual(m01, other.m01) &&
+                approximatelyEqual(m10, other.m10) && approximatelyEqual(m11, other.m11);
+    }
+
     @Override
     public String toString()
     {
-        return "Matrix2f [\n"
-                + "    [" + m00 + " " + m01 + "]\n"
-                + "    [" + m10 + " " + m11 + "]\n"
-                + "]";
+        return String.format(
+                """
+                Matrix2f
+                [
+                    [%+.6f, %+.6f]
+                    [%+.6f, %+.6f]
+                ]
+                """,
+                m00, m01,
+                m10, m11
+        );
     }
     @Override
     public boolean equals(Object obj)
@@ -135,7 +158,8 @@ public final class Matrix2f
         if (this == obj) return true;
         if (!(obj instanceof Matrix2f other)) return false;
 
-        return Float.compare(m00, other.m00) == 0 && Float.compare(m01, other.m01) == 0 &&
+        return
+                Float.compare(m00, other.m00) == 0 && Float.compare(m01, other.m01) == 0 &&
                 Float.compare(m10, other.m10) == 0 && Float.compare(m11, other.m11) == 0;
     }
     @Override

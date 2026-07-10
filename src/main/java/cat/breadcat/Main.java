@@ -2,20 +2,36 @@ package cat.breadcat;
 
 import cat.breadcat.trajectory.matrix.Matrix4d;
 
+import java.util.Random;
+
 public class Main
 {
     public static void main(String[] args)
     {
-        Matrix4d m1 = new Matrix4d(
-                0, 2, 1, 2,
-                3, 0, 3, 4,
-                5, 6, 0, 6,
-                7, 8, 7, 0
-        );
+        Random random = new Random(69420);
 
-        Matrix4d m2 = Matrix4d.IDENTITY;
-        Matrix4d m3 = m1.divide(m2);
+        for (int i = 0; i < 10_000; i++)
+        {
+            Matrix4d mat = new Matrix4d(
+                    random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(),
+                    random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(),
+                    random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble(),
+                    random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble()
+            );
 
-        System.out.println(m3);
+            Matrix4d inv = mat.inverse();
+            Matrix4d mul = mat.multiply(inv);
+
+            if(!mul.approximatelyEqual(Matrix4d.IDENTITY))
+            {
+                System.out.println(mat);
+                System.out.println(inv);
+                System.out.println(mul);
+
+                throw new RuntimeException("CRASH");
+            }
+        }
+
+        System.out.println("SUCCESS");
     }
 }

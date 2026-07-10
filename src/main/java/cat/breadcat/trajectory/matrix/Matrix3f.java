@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.matrix;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 import cat.breadcat.trajectory.vector.Vector3f;
@@ -47,6 +48,14 @@ public final class Matrix3f
     )
     {
         return a1 * b1 + a2 * b2 + a3 * b3;
+    }
+
+    private static boolean approximatelyEqual(
+            float a1,
+            float b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON_F);
     }
 
 
@@ -156,15 +165,30 @@ public final class Matrix3f
         );
     }
 
+    public boolean approximatelyEqual(Matrix3f other)
+    {
+        return
+                approximatelyEqual(m00, other.m00) && approximatelyEqual(m01, other.m01) && approximatelyEqual(m02, other.m02) &&
+                approximatelyEqual(m10, other.m10) && approximatelyEqual(m11, other.m11) && approximatelyEqual(m12, other.m12) &&
+                approximatelyEqual(m20, other.m20) && approximatelyEqual(m21, other.m21) && approximatelyEqual(m22, other.m22);
+    }
 
     @Override
     public String toString()
     {
-        return "Matrix3f [\n"
-                + "    [" + m00 + " " + m01 + " " + m02 + "]\n"
-                + "    [" + m10 + " " + m11 + " " + m12 + "]\n"
-                + "    [" + m20 + " " + m21 + " " + m22 + "]\n"
-                + "]";
+        return String.format(
+                """
+                Matrix3f
+                [
+                    [%+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f]
+                    [%+.6f, %+.6f, %+.6f]
+                ]
+                """,
+                m00, m01, m02,
+                m10, m11, m12,
+                m20, m21, m22
+        );
     }
     @Override
     public boolean equals(Object obj)
@@ -172,7 +196,8 @@ public final class Matrix3f
         if (this == obj) return true;
         if (!(obj instanceof Matrix3f other)) return false;
 
-        return Float.compare(m00, other.m00) == 0 && Float.compare(m01, other.m01) == 0 && Float.compare(m02, other.m02) == 0 &&
+        return
+                Float.compare(m00, other.m00) == 0 && Float.compare(m01, other.m01) == 0 && Float.compare(m02, other.m02) == 0 &&
                 Float.compare(m10, other.m10) == 0 && Float.compare(m11, other.m11) == 0 && Float.compare(m12, other.m12) == 0 &&
                 Float.compare(m20, other.m20) == 0 && Float.compare(m21, other.m21) == 0 && Float.compare(m22, other.m22) == 0;
     }

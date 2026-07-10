@@ -6,8 +6,6 @@ import cat.breadcat.trajectory.vector.Vector4d;
 
 public final class Matrix4f
 {
-    private static final double EPSILON = 1e-12;
-
     public static final Matrix4f ZERO = new Matrix4f(
             0, 0, 0, 0,
             0, 0, 0, 0,

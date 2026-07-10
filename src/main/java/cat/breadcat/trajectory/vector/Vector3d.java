@@ -6,7 +6,7 @@ import cat.breadcat.toolbox.util.MathUtils;
 public final class Vector3d
 {
     public static final Vector3d ZERO = new Vector3d(0, 0, 0);
-    public static final Vector3d ONE = new Vector3d(1, 1, 1);
+    public static final Vector3d UNIT = new Vector3d(1, 1, 1);
     public static final Vector3d UNIT_X = new Vector3d(1, 0, 0);
     public static final Vector3d UNIT_Y = new Vector3d(0, 1, 0);
     public static final Vector3d UNIT_Z = new Vector3d(0, 0, 1);

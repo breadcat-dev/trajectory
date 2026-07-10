@@ -6,8 +6,6 @@ import cat.breadcat.trajectory.vector.Vector3f;
 
 public final class Matrix3f
 {
-    private static final float EPSILON = 1e-12f;
-
     public static final Matrix3f ZERO = new Matrix3f(
             0, 0, 0,
             0, 0, 0,

@@ -6,8 +6,6 @@ import cat.breadcat.trajectory.vector.Vector2d;
 
 public final class Matrix2d
 {
-    private static final double EPSILON = 1e-12;
-
     public static final Matrix2d ZERO = new Matrix2d(
             0, 0,
             0, 0

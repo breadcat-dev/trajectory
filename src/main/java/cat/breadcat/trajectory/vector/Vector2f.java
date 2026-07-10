@@ -6,7 +6,7 @@ import cat.breadcat.toolbox.util.MathUtils;
 public final class Vector2f
 {
     public static final Vector2f ZERO = new Vector2f(0, 0);
-    public static final Vector2f ONE = new Vector2f(1, 1);
+    public static final Vector2f UNIT = new Vector2f(1, 1);
     public static final Vector2f UNIT_X = new Vector2f(1, 0);
     public static final Vector2f UNIT_Y = new Vector2f(0, 1);
 

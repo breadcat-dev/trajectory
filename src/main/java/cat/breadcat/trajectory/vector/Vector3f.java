@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -31,6 +32,14 @@ public final class Vector3f
                 a3 * b3;
     }
 
+    private static boolean approximatelyEqual(
+            float a1,
+            float b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON_F);
+    }
+
 
     public Vector3f add(Vector3f other)
     {
@@ -48,12 +57,12 @@ public final class Vector3f
                 z - other.z
         );
     }
-    public Vector3f multiply(float other)
+    public Vector3f multiply(float scalar)
     {
         return new Vector3f(
-                x * other,
-                y * other,
-                z * other
+                x * scalar,
+                y * scalar,
+                z * scalar
         );
     }
     public Vector3f multiply(Vector3f other)
@@ -64,15 +73,15 @@ public final class Vector3f
                 z * other.z
         );
     }
-    public Vector3f divide(float other)
+    public Vector3f divide(float scalar)
     {
-        if(Float.compare(other, 0.0f) == 0)
-            throw new DivisionByZeroException("other");
+        if(Float.compare(scalar, 0.0f) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector3f(
-                x / other,
-                y / other,
-                z / other
+                x / scalar,
+                y / scalar,
+                z / scalar
         );
     }
     public Vector3f divide(Vector3f other)
@@ -142,10 +151,20 @@ public final class Vector3f
         );
     }
 
+    public boolean approximatelyEqual(Vector3f other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y) && approximatelyEqual(z, other.z);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector3f(" + x + ", " + y + ", " + z + ")";
+        return String.format(
+                """
+                Vector3f(%+.6f, %+.6f, %+.6f)
+                """,
+                x, y, z
+        );
     }
     @Override
     public boolean equals(Object obj)

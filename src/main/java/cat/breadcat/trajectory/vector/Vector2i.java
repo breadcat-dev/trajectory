@@ -42,11 +42,11 @@ public final class Vector2i
                 y - other.y
         );
     }
-    public Vector2i multiply(long other)
+    public Vector2i multiply(long scalar)
     {
         return new Vector2i(
-                x * other,
-                y * other
+                x * scalar,
+                y * scalar
         );
     }
     public Vector2i multiply(Vector2i other)
@@ -56,14 +56,14 @@ public final class Vector2i
                 y * other.y
         );
     }
-    public Vector2i divide(long other)
+    public Vector2i divide(long scalar)
     {
-        if(other == 0)
-            throw new DivisionByZeroException("other");
+        if(scalar == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector2i(
-                x / other,
-                y / other
+                x / scalar,
+                y / scalar
         );
     }
     public Vector2i divide(Vector2i other)
@@ -109,10 +109,20 @@ public final class Vector2i
         return new Vector2i(-x, -y);
     }
 
+    public boolean approximatelyEqual(Vector3i other)
+    {
+        return x == other.x && y == other.y;
+    }
+
     @Override
     public String toString()
     {
-        return "Vector2i(" + x + ", " + y + ")";
+        return String.format(
+                """
+                Vector2i(%+d, %+d)
+                """,
+                x, y
+        );
     }
     @Override
     public boolean equals(Object obj)

@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -27,6 +28,13 @@ public final class Vector2d
                 a2 * b2;
     }
 
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
+    }
 
     public Vector2d add(Vector2d other)
     {
@@ -42,11 +50,11 @@ public final class Vector2d
                 y - other.y
         );
     }
-    public Vector2d multiply(double other)
+    public Vector2d multiply(double scalar)
     {
         return new Vector2d(
-                x * other,
-                y * other
+                x * scalar,
+                y * scalar
         );
     }
     public Vector2d multiply(Vector2d other)
@@ -56,14 +64,14 @@ public final class Vector2d
                 y * other.y
         );
     }
-    public Vector2d divide(double other)
+    public Vector2d divide(double scalar)
     {
-        if(Double.compare(other, 0.0) == 0)
-            throw new DivisionByZeroException("other");
+        if(Double.compare(scalar, 0.0) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector2d(
-                x / other,
-                y / other
+                x / scalar,
+                y / scalar
         );
     }
     public Vector2d divide(Vector3f other)
@@ -125,10 +133,20 @@ public final class Vector2d
         );
     }
 
+    public boolean approximatelyEqual(Vector2d other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector2d(" + x + ", " + y + ")";
+        return String.format(
+                """
+                Vector2d(%+.6f, %+.6f)
+                """,
+                x, y
+        );
     }
     @Override
     public boolean equals(Object obj)

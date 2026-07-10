@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -27,6 +28,13 @@ public final class Vector2f
                 a2 * b2;
     }
 
+    private static boolean approximatelyEqual(
+            float a1,
+            float b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON_F);
+    }
 
     public Vector2f add(Vector2f other)
     {
@@ -42,11 +50,11 @@ public final class Vector2f
                 y - other.y
         );
     }
-    public Vector2f multiply(float other)
+    public Vector2f multiply(float scalar)
     {
         return new Vector2f(
-                x * other,
-                y * other
+                x * scalar,
+                y * scalar
         );
     }
     public Vector2f multiply(Vector2f other)
@@ -56,14 +64,14 @@ public final class Vector2f
                 y * other.y
         );
     }
-    public Vector2f divide(float other)
+    public Vector2f divide(float scalar)
     {
-        if(Float.compare(other, 0.0f) == 0)
-            throw new DivisionByZeroException("other");
+        if(Float.compare(scalar, 0.0f) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector2f(
-                x / other,
-                y / other
+                x / scalar,
+                y / scalar
         );
     }
     public Vector2f divide(Vector3f other)
@@ -125,10 +133,20 @@ public final class Vector2f
         );
     }
 
+    public boolean approximatelyEqual(Vector2f other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector2f(" + x + ", " + y + ")";
+        return String.format(
+                """
+                Vector2f(%+.6f, %+.6f)
+                """,
+                x, y
+        );
     }
     @Override
     public boolean equals(Object obj)

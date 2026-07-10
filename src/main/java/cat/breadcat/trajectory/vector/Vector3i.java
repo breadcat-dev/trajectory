@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -31,7 +32,6 @@ public final class Vector3i
                 a3 * b3;
     }
 
-
     public Vector3i add(Vector3i other)
     {
         return new Vector3i(
@@ -48,12 +48,12 @@ public final class Vector3i
                 z - other.z
         );
     }
-    public Vector3i multiply(long other)
+    public Vector3i multiply(long scalar)
     {
         return new Vector3i(
-                x * other,
-                y * other,
-                z * other
+                x * scalar,
+                y * scalar,
+                z * scalar
         );
     }
     public Vector3i multiply(Vector3i other)
@@ -64,15 +64,15 @@ public final class Vector3i
                 z * other.z
         );
     }
-    public Vector3i divide(long other)
+    public Vector3i divide(long scalar)
     {
-        if(other == 0)
-            throw new DivisionByZeroException("other");
+        if(scalar == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector3i(
-                x / other,
-                y / other,
-                z / other
+                x / scalar,
+                y / scalar,
+                z / scalar
         );
     }
     public Vector3i divide(Vector3i other)
@@ -129,10 +129,20 @@ public final class Vector3i
         return new Vector3i(-x, -y, -z);
     }
 
+    public boolean approximatelyEqual(Vector3i other)
+    {
+        return x == other.x && y == other.y && z == other.z;
+    }
+
     @Override
     public String toString()
     {
-        return "Vector3i(" + x + ", " + y + ", " + z + ")";
+        return String.format(
+                """
+                Vector3i(%+d, %+d, %+d)
+                """,
+                x, y, z
+        );
     }
     @Override
     public boolean equals(Object obj)

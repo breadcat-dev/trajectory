@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -31,6 +32,14 @@ public final class Vector3d
                 a3 * b3;
     }
 
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
+    }
+
 
     public Vector3d add(Vector3d other)
     {
@@ -48,12 +57,12 @@ public final class Vector3d
                 z - other.z
         );
     }
-    public Vector3d multiply(double other)
+    public Vector3d multiply(double scalar)
     {
         return new Vector3d(
-                x * other,
-                y * other,
-                z * other
+                x * scalar,
+                y * scalar,
+                z * scalar
         );
     }
     public Vector3d multiply(Vector3d other)
@@ -64,15 +73,15 @@ public final class Vector3d
                 z * other.z
         );
     }
-    public Vector3d divide(double other)
+    public Vector3d divide(double scalar)
     {
-        if(Double.compare(other, 0.0) == 0)
-            throw new DivisionByZeroException("other");
+        if(Double.compare(scalar, 0.0) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector3d(
-                x / other,
-                y / other,
-                z / other
+                x / scalar,
+                y / scalar,
+                z / scalar
         );
     }
     public Vector3d divide(Vector3f other)
@@ -146,10 +155,20 @@ public final class Vector3d
         );
     }
 
+    public boolean approximatelyEqual(Vector3d other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y) && approximatelyEqual(z, other.z);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector3d(" + x + ", " + y + ", " + z + ")";
+        return String.format(
+                """
+                Vector3d(%+.6f, %+.6f, %+.6f)
+                """,
+                x, y, z
+        );
     }
     @Override
     public boolean equals(Object obj)

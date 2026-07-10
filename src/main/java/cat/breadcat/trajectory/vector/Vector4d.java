@@ -1,7 +1,9 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
+import cat.breadcat.trajectory.matrix.Matrix4d;
 
 public final class Vector4d
 {
@@ -35,6 +37,14 @@ public final class Vector4d
                 a4 * b4;
     }
 
+    private static boolean approximatelyEqual(
+            double a1,
+            double b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON);
+    }
+
 
     public Vector4d add(Vector4d other)
     {
@@ -54,13 +64,13 @@ public final class Vector4d
                 w - other.w
         );
     }
-    public Vector4d multiply(double other)
+    public Vector4d multiply(double scalar)
     {
         return new Vector4d(
-                x * other,
-                y * other,
-                z * other,
-                w * other
+                x * scalar,
+                y * scalar,
+                z * scalar,
+                w * scalar
         );
     }
     public Vector4d multiply(Vector4d other)
@@ -72,16 +82,16 @@ public final class Vector4d
                 w * other.w
         );
     }
-    public Vector4d divide(double other)
+    public Vector4d divide(double scalar)
     {
-        if(Double.compare(other, 0.0) == 0)
-            throw new DivisionByZeroException("other");
+        if(Double.compare(scalar, 0.0) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector4d(
-                x / other,
-                y / other,
-                z / other,
-                w / other
+                x / scalar,
+                y / scalar,
+                z / scalar,
+                w / scalar
         );
     }
     public Vector4d divide(Vector4d other)
@@ -151,10 +161,20 @@ public final class Vector4d
         );
     }
 
+    public boolean approximatelyEqual(Vector4d other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y) && approximatelyEqual(z, other.z) && approximatelyEqual(w, other.w);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector4d(" + x + ", " + y + ", " + z + ", " + w + ")";
+        return String.format(
+                """
+                Vector4d(%+.6f, %+.6f, %+.6f, %+.6f)
+                """,
+                x, y, z, w
+        );
     }
     @Override
     public boolean equals(Object obj)

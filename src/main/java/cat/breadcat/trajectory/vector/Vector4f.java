@@ -1,5 +1,6 @@
 package cat.breadcat.trajectory.vector;
 
+import cat.breadcat.toolbox.constant.MathConstants;
 import cat.breadcat.toolbox.exception.DivisionByZeroException;
 import cat.breadcat.toolbox.util.MathUtils;
 
@@ -35,6 +36,13 @@ public final class Vector4f
                 a4 * b4;
     }
 
+    private static boolean approximatelyEqual(
+            float a1,
+            float b1
+    )
+    {
+        return MathUtils.approximatelyEqual(a1, b1, MathConstants.EPSILON_F);
+    }
 
     public Vector4f add(Vector4f other)
     {
@@ -54,13 +62,13 @@ public final class Vector4f
                 w - other.w
         );
     }
-    public Vector4f multiply(float other)
+    public Vector4f multiply(float scalar)
     {
         return new Vector4f(
-                x * other,
-                y * other,
-                z * other,
-                w * other
+                x * scalar,
+                y * scalar,
+                z * scalar,
+                w * scalar
         );
     }
     public Vector4f multiply(Vector4f other)
@@ -72,16 +80,16 @@ public final class Vector4f
                 w * other.w
         );
     }
-    public Vector4f divide(float other)
+    public Vector4f divide(float scalar)
     {
-        if(Float.compare(other, 0.0f) == 0)
-            throw new DivisionByZeroException("other");
+        if(Float.compare(scalar, 0.0f) == 0)
+            throw new DivisionByZeroException("scalar");
 
         return new Vector4f(
-                x / other,
-                y / other,
-                z / other,
-                w / other
+                x / scalar,
+                y / scalar,
+                z / scalar,
+                w / scalar
         );
     }
     public Vector4f divide(Vector4f other)
@@ -151,10 +159,20 @@ public final class Vector4f
         );
     }
 
+    public boolean approximatelyEqual(Vector4f other)
+    {
+        return approximatelyEqual(x, other.x) && approximatelyEqual(y, other.y) && approximatelyEqual(z, other.z) && approximatelyEqual(w, other.w);
+    }
+
     @Override
     public String toString()
     {
-        return "Vector4f(" + x + ", " + y + ", " + z + ", " + w + ")";
+        return String.format(
+                """
+                Vector4f(%+.6f, %+.6f, %+.6f, %+.6f)
+                """,
+                x, y, z, w
+        );
     }
     @Override
     public boolean equals(Object obj)
